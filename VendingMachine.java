@@ -1,104 +1,84 @@
 package assignments.VendingMachine;
 
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class VendingMachine {
-    double amountInVendingMachine = 0;
-    double amountFromUser;
-    int itemID;
-    Scanner scanner;
+    static int itemID;
+    static Scanner scanner;
+    static List<String> transactionDump = new ArrayList<>();
+    static String[][] vendingMachineItems;
+    static double amountInVendingMachine = 0;
+    static double amountFromUser;
+    static double balanceAmount;
 
     public static void main(String[] args) {
         VendingMachine vendingMachine = new VendingMachine();
         while (true) {
             vendingMachine.printVendingMachineMenu();
-            vendingMachine.takeUserInput();
-            vendingMachine.validateUserInput();
-            vendingMachine.refundBalanceAndDispenseItem();
+            int userInput = vendingMachine.getUserInput();
+            vendingMachine.refundBalanceAndDispenseItem(userInput);
         }
     }
 
     void printVendingMachineMenu() {
+        vendingMachineItems = new String[][]{{"1", "Jasmine Tea", "10"}, {"2", "Chamomile Tea", "12"}, {"3", "Hibiscus Tea", "14"}, {"4", "Green Tea", "8"}};
         //printing out the vending machine display to the user
         System.out.println("Hi! Please provide an input for me to dispense :)");
         System.out.println("ID\t\t Name\t\t\t\t Price\t\n" +
-                "1.\t\t Jasmine Tea\t\t 10\t\n" +
-                "2.\t\t Chamomile Tea\t\t 12\t\n" +
-                "3.\t\t Hibiscus Tea\t\t 14\t\n" +
-                "4.\t\t Green Tea\t\t\t 8\t\n\n" +
-                "Or enter 5 to view the balance in Vending Machine\t\t\n");
+                vendingMachineItems[0][0] + "\t\t" + vendingMachineItems[0][1] + "\t\t\t" + vendingMachineItems[0][2] + "\t\n" +
+                vendingMachineItems[1][0] + "\t\t" + vendingMachineItems[1][1] + "\t\t" + vendingMachineItems[1][2] + "\t\n" +
+                vendingMachineItems[2][0] + "\t\t" + vendingMachineItems[2][1] + "\t\t" + vendingMachineItems[2][2] + "\t\n" +
+                vendingMachineItems[3][0] + "\t\t" + vendingMachineItems[3][1] + "\t\t\t" + vendingMachineItems[3][2] + "\t\n" +
+                "\nOr enter 5 to view the balance in Vending Machine\t\t\n" +
+                "\nOr enter 6 to view the previous transactions in Vending Machine\t\t\n");
     }
 
-    void takeUserInput() {
+    int getUserInput() {
         //take the input from the user regarding the item to be dispensed
         scanner = new Scanner(System.in);
         System.out.println("Enter the ID of the item you want : ");
         itemID = scanner.nextInt();
+        return itemID;
     }
 
-    void validateUserInput() {
+    void refundBalanceAndDispenseItem(int userInput) {
 
-        //checking the input item ID if it is valid or not
-        if (itemID < 1 || itemID > 5) {
-            System.out.println("Please enter a valid Item ID.");
-        } else if (itemID == 5) {
+        if (userInput == 1 || userInput == 2 || userInput == 3 || userInput == 4) {
+            System.out.println("Please proceed with payment!");
+            amountFromUser = scanner.nextDouble();
+            double priceOfTheItem = Double.parseDouble(vendingMachineItems[(userInput) - 1][2]);
+            if (amountFromUser >= priceOfTheItem) {
+                amountInVendingMachine += priceOfTheItem;
+                balanceAmount = Math.abs(priceOfTheItem - amountFromUser);
+                System.out.println("Your balance amount is : " + balanceAmount);
+                System.out.println("Dispensing " + vendingMachineItems[userInput - 1][1]);
+                recordPreviousTransactions(userInput);
+            } else {
+                System.out.println("Amount is insufficient! Please try again!");
+            }
+        } else if (userInput == 5) {
             System.out.println("The balance amount in vending machine is :" + amountInVendingMachine);
-            takeUserInput();
-            System.out.println("Proceed with payment!");
+        } else if (userInput == 6) {
+            viewPreviousTransactions();
         } else {
-            System.out.println("Proceed with payment!");
+            System.out.println("Please enter a valid ID.");
         }
-
-        //If the input of item id is valid, take the payment from the user.
-        amountFromUser = scanner.nextDouble();
     }
 
-    void refundBalanceAndDispenseItem() {
-        //verify the payment sufficiency and dispense the item 1
-        if (itemID == 1) {
-            if (amountFromUser > 10) {
-                amountInVendingMachine += 10;
-                double balanceAmount = 10 - amountFromUser;
-                System.out.println("Your balance amount is : " + Math.abs(balanceAmount));
-                System.out.println("Dispensing Jasmine Tea.");
-            } else {
-                System.out.println("Sorry! payment insufficient!");
-            }
-        }
+    void recordPreviousTransactions(int userInput) {
+        String transactionDateAndTime = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        String dayWiseTransaction = "\n On " + transactionDateAndTime + " is :\n The itemID dispensed :" + String.valueOf(userInput) + " user paid : " + String.valueOf(amountFromUser) + " balance amount : " + String.valueOf(balanceAmount) + " and the amount in vending machine was : " + String.valueOf(amountInVendingMachine)+ "\n";
+        transactionDump.add(dayWiseTransaction);
+    }
 
-        //verify the payment sufficiency and dispense the item 2
-        if (itemID == 2) {
-            if (amountFromUser > 12) {
-                amountInVendingMachine += 12;
-                double balanceAmount = 12 - amountFromUser;
-                System.out.println("Your balance amount is : " + Math.abs(balanceAmount));
-                System.out.println("Dispensing Chamomile Tea.");
-            } else {
-                System.out.println("Sorry! payment insufficient!");
-            }
-        }
-
-        //verify the payment sufficiency and dispense the item 3
-        if (itemID == 3) {
-            if (amountFromUser > 14) {
-                amountInVendingMachine += 14;
-                double balanceAmount = 14 - amountFromUser;
-                System.out.println("Your balance amount is : " + Math.abs(balanceAmount));
-                System.out.println("Dispensing Hibiscus Tea.");
-            } else {
-                System.out.println("Sorry! payment insufficient!");
-            }
-        }
-
-        //verify the payment sufficiency and dispense the item 4
-        if (itemID == 4) {
-            if (amountFromUser > 8) {
-                amountInVendingMachine += 8;
-                double balanceAmount = 8 - amountFromUser;
-                System.out.println("Your balance amount is : " + Math.abs(balanceAmount));
-                System.out.println("Dispensing Green Tea.");
-            } else {
-                System.out.println("Sorry! Payment insufficient!");
+    void viewPreviousTransactions() {
+        if (transactionDump.size() == 0) {
+            System.out.println("No transactions yet!");
+        } else {
+            System.out.println("\n Displaying transaction details below : ");
+            for (int i = 0; i < transactionDump.size(); i++) {
+                System.out.println(transactionDump.get(i));
             }
         }
     }
