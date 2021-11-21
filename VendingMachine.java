@@ -68,7 +68,7 @@ public class VendingMachine {
     }
 
     void recordPreviousTransactions(int userInput) {
-        String transactionDateAndTime = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+        String transactionDateAndTime = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(new Date());
         String dayWiseTransaction = "\n On " + transactionDateAndTime + " is :\n The item dispensed : " + String.valueOf(vendingMachineItems[userInput - 1][1]) + " User paid : " + String.valueOf(amountFromUser) + " Balance amount paid to the user : " + String.valueOf(balanceAmount) + " and the amount in vending machine was : " + String.valueOf(amountInVendingMachine)+ "\n";
         transactionDump.add(dayWiseTransaction);
     }
