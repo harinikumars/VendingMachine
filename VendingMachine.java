@@ -44,7 +44,8 @@ public class VendingMachine {
 
     void refundBalanceAndDispenseItem(int userInput) {
 
-        if (userInput == 1 || userInput == 2 || userInput == 3 || userInput == 4) {
+        //validate the user input, dispense item and change accordingly
+        if (userInput >= 1 && userInput <= 4) {
             System.out.println("Please proceed with payment!");
             amountFromUser = scanner.nextDouble();
             double priceOfTheItem = Double.parseDouble(vendingMachineItems[(userInput) - 1][2]);
@@ -68,7 +69,7 @@ public class VendingMachine {
 
     void recordPreviousTransactions(int userInput) {
         String transactionDateAndTime = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
-        String dayWiseTransaction = "\n On " + transactionDateAndTime + " is :\n The itemID dispensed :" + String.valueOf(userInput) + " user paid : " + String.valueOf(amountFromUser) + " balance amount : " + String.valueOf(balanceAmount) + " and the amount in vending machine was : " + String.valueOf(amountInVendingMachine)+ "\n";
+        String dayWiseTransaction = "\n On " + transactionDateAndTime + " is :\n The item dispensed : " + String.valueOf(vendingMachineItems[userInput - 1][1]) + " User paid : " + String.valueOf(amountFromUser) + " Balance amount paid to the user : " + String.valueOf(balanceAmount) + " and the amount in vending machine was : " + String.valueOf(amountInVendingMachine)+ "\n";
         transactionDump.add(dayWiseTransaction);
     }
 
